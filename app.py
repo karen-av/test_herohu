@@ -1,8 +1,7 @@
-from flask import Flask, json, request 
-
+from flask import Flask, json, request, flash, redirect, render_template, session
 
 app = Flask(__name__) 
 
 @app.route('/') 
 def index(): 
-    return "<p>Hello, World!</p>"
+    return render_template("index.html")
