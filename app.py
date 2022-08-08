@@ -1,28 +1,10 @@
-from ast import Try
-import bdb
-from crypt import methods
-from curses.ascii import isdigit
-import os
-from tkinter import INSERT
-from unicodedata import name
-import datetime
+from flask import Flask, json, request 
+import logging 
 
-from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
-from flask_session import Session
-from tempfile import mkdtemp
-from werkzeug.security import check_password_hash, generate_password_hash
+logging.basicConfig(level=logging.DEBUG) 
 
-from helpers import apology, login_required, lookup, usd
+app = Flask(__name__) 
 
-# Configure application
-app = Flask(__name__)
-
-# Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
-
-
-@app.route("/")
-@login_required
-def index():
-    return render_template("index.html")
+@app.route('/') 
+def index(): 
+    return "<p>Hello, World!</p>"
