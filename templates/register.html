@@ -1,0 +1,184 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <form action="/register" method="post" name="register" onsubmit="return validateForm()">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username"  placeholder="Username" type="text"  minlength="" maxlength="30">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto"  id="password" name="password" placeholder="Password" type="password"  minlength="" maxlength="30" >
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="confirmation" name="confirmation" placeholder="Password (again)" type="password"  minlength="" maxlength="30" >
+        </div>
+        <button class="btn btn-primary" type="submit" id="button">Registr</button>
+        <p id="demo"></p>
+    </form>
+
+
+    <script>
+
+    /*  let arr_en = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        let arr_EN = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        let arr_symb = ['!', '@', '#', '$', '%', '&', '?', '-', '+', '=', '~'];
+        let arr_num = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+        let arr_symbName = ['@', '$', '&','-'];
+    */
+
+        function validateForm() {
+                let username = document.forms["register"]["username"].value;
+                let password = document.forms["register"]["password"].value;
+                let confirmation = document.forms["register"]["confirmation"].value;
+
+                if (username.length < 3 || username.length > 30) {
+                    document.getElementById("username").style.border = "1px solid red";
+                    alert("Username is not available. Use thrуe or more characters.");
+                    document.getElementById("username").focus()
+                    return false;
+                }
+                else {
+                    document.getElementById("username").style.border = "1px solid green";
+                    document.getElementById("button").focus()
+                }
+
+                if (checkUsernameInvalidSymbol(username)) {
+                    document.getElementById("username").style.border = "1px solid red";
+                    alert("Username contains an invalid character. Use upper and lower case characters of the English alphabet and digit from 0 to 9");
+                    document.getElementById("username").focus()
+                    return false;
+                }
+                else {
+                    document.getElementById("username").style.border = "1px solid green";
+                    document.getElementById("button").focus()
+                }
+
+                if (checkPasswordMastContain(password)) {
+                    document.getElementById("password").style.border = "1px solid red";
+                    alert("Password does not contain the necessary characters. Password mast contain at least one upper and lower case characters from English alphabet and one digit from 0 to 9 and one charecter from !, @, #, $, %, &, ?, -, +, =, ~.")
+                    document.getElementById("password").focus()
+                    return false;
+                }
+                else {
+                    document.getElementById("password").style.border = "1px solid green";
+                    document.getElementById("button").focus()
+                }
+
+                if (checkPasswordInvalidSymbol(password)) {
+                    document.getElementById("password").style.border = "1px solid red";
+                    alert("Password contains an invalid character.");
+                    document.getElementById("password").focus()
+                    return false;
+                }
+                else {
+                    document.getElementById("password").style.border = "1px solid green";
+                    document.getElementById("button").focus()
+                }
+
+                if (password.length < 6 || password.length > 30) {
+                    document.getElementById("password").style.border = "1px solid red";
+                    alert("Password is not available. Password mast be between 6 and 30 characters.");
+                    document.getElementById("password").focus()
+                    return false;
+                }
+                else {
+                    document.getElementById("password").style.border = "1px solid green";
+                    document.getElementById("button").focus()
+                }
+
+                if (password != confirmation) {
+                    document.getElementById("confirmation").style.border = "1px solid red";
+                    alert("Password confirmation is different.");
+                    document.getElementById("confirmation").focus()
+                    return false;
+                }
+                else {
+                    document.getElementById("confirmation").style.border = "1px solid green";
+                    document.getElementById("button").focus()
+                }
+                
+                    return true;
+                
+            }
+
+        
+     /*   function checkPasswordMastHave(word) {
+
+            for (let i = 0; i < word.length; i++) {
+                if (arr_en.indexOf(word[i]) >= 0){
+                    for (let b = 0; b < word.length; b++) {
+                        if (arr_EN.indexOf(word[b]) >= 0) {
+                            for (let s = 0; s < word.length; s++) {
+                                if (arr_symb.indexOf(word[s]) >= 0) {
+                                    for (let c = 0; c < word.length; c++) {
+                                        if (arr_num.indexOf(word[c]) >= 0 ) {
+                                            return false;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        } 
+                    }
+                }
+            }
+            return true;
+        } */
+
+     /*   function checkPasswordBadSymbol(word) {
+
+            for (let i = 0; i < word.length; i++) {
+                    if (arr_en.indexOf(word[i]) === -1){
+                        if (arr_EN.indexOf(word[i]) === -1) {        
+                            if (arr_symb.indexOf(word[i]) === -1){          
+                                if (arr_num.indexOf(word[i]) === -1) {
+                                    return true;
+                                    break;
+                                }   
+                            }
+                        }  
+                    }
+                }
+                return false;    
+        } */
+
+      /*  function checkUsernameBadSymbol(word) {
+
+            for (let i = 0; i < word.length; i++) {
+                if (arr_en.indexOf(word[i]) === -1){
+                    if (arr_EN.indexOf(word[i]) === -1) {        
+                        if (arr_symbName.indexOf(word[i]) === -1){          
+                            if (arr_num.indexOf(word[i]) === -1) {
+                                return true;
+                                break;
+                            }   
+                        }
+                    }  
+                }
+            }
+            return false;    
+        } */
+
+      /*  function checkUsernameMastHave(word) {
+            for (let i = 0; i < word.length; i++) {
+                if (arr_en.indexOf(word[i]) >= 0){
+                    return false;
+                    break;
+                }
+            }
+            for (let b = 0; b < word.length; b++) {
+                if (arr_EN.indexOf(word[b]) >= 0) {                
+                    return false;
+                    break;
+                }
+            }
+            return true; 
+        } */
+
+    </script>
+    
+{% endblock %}
+
