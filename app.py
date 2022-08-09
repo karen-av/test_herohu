@@ -19,16 +19,19 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-conn = sqlite3.connect("finance.db")
+conn = sqlite3.connect("finance.db", check_same_thread=False)
 cur = conn.cursor()
 
 @app.route('/') 
 @login_required
 def index(): 
     cur.execute("SELECT * FROM users WHERE id = ?", (session["user_id"],))
-    cash = cur.fetchone()[0][3]
+    cash = cur.fetchone()[3]
+    print(cash)
     cur.execute("SELECT * FROM portfolio WHERE user_id = ?", (session["user_id"],)) 
-    paper = cur.fetchone()
+    paper = cur.fetchall()
+    print(paper)
+
 
     # value user's portfolio
     total = 0
@@ -70,13 +73,14 @@ def login():
 
         # Query database for username
         cur.execute("SELECT * FROM users WHERE username = ?", (request.form.get("username"),))
-        rows = cur.fetchone()
+        rows = cur.fetchall()
+        print(f"rows, {rows}")
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0][2], request.form.get("password")):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = rows[0][0]
+        session["user_id"] = rows[0]
 
         # Redirect user to home page
         return redirect("/")
@@ -110,8 +114,11 @@ def register():
             return apology("Invalid confirmation", 403)
         
         # Проверка на существование пользователя
-        us = cur.execute("SELECT username FROM users WHERE username = ?", (username,))
-        if len(us) != 0:
+        us = cur.execute("SELECT username FROM users WHERE username = ?", (username,)).fetchone()
+        print(us)
+        if not us:
+            next
+        elif len(us) != 0:
             return apology("User exist", 400)
 
         # Добавляем пользователя и хеш пароля в бд
@@ -119,7 +126,9 @@ def register():
         conn.commit()
         
         # Remember which user has logged in
-        session["user_id"] = cur.execute("SELECT * FROM users WHERE username = ?", (username,))[0][0]
+        x = cur.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+        print(x)
+        session["user_id"] = x[0]
         print(session["user_id"])
         # Redirect user to home page
         return redirect("/")
