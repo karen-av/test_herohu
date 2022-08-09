@@ -110,7 +110,7 @@ def register():
             return apology("Invalid confirmation", 403)
         
         # Проверка на существование пользователя
-        us = cur.execute("SELECT username FROM users WHERE username = ?", (username,)).fetchone()
+        us = cur.execute("SELECT username FROM users WHERE username = ?", (username,))
         if len(us) != 0:
             return apology("User exist", 400)
 
@@ -120,6 +120,7 @@ def register():
         
         # Remember which user has logged in
         session["user_id"] = cur.execute("SELECT * FROM users WHERE username = ?", (username,))[0][0]
+        print(session["user_id"])
         # Redirect user to home page
         return redirect("/")
     else:
