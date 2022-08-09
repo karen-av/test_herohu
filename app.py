@@ -21,19 +21,21 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 conn = sqlite3.connect("finance.db")
-x = 12
 cur = conn.cursor()
-cur.execute("SELECT * FROM users WHERE id = %i;" %x)
-cash = cur.fetchall()[0][3]
-cur.execute("SELECT * FROM portfolio WHERE user_id = %i;" %x) 
-paper = cur.fetchone()
 
-print(cash)
-print(paper)
+#x = 12
+#cur.execute("SELECT * FROM users WHERE id = %i;" %x)
+#cash = cur.fetchall()[0][3]
+#cur.execute("SELECT * FROM portfolio WHERE user_id = %i;" %x) 
+#paper = cur.fetchone()
+#print(cash)
+#print(paper)
 
 @app.route('/') 
+@login_required
 def index(): 
-    cur.execute("SELECT * FROM users WHERE id = $;" %session["user_id"])
+    x = session["user_id"]
+    cur.execute("SELECT * FROM users WHERE id = %s;" %x)
     cash = cur.fetchone()[0][3]
     cur.execute("SELECT * FROM portfolio WHERE user_id = %s;" %session["user_id"]) 
     paper = cur.fetchone()
@@ -58,3 +60,37 @@ def index():
     return render_template("index.html", total = usd(total + cash), cash = usd(cash), listOfPapers = listOfPapers)
 
     
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """Log user in"""
+
+    # Forget any user_id
+    session.clear()
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # Ensure username was submitted
+        if not request.form.get("username"):
+            return apology("must provide username", 403)
+
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            return apology("must provide password", 403)
+
+        # Query database for username
+        cur.execute("SELECT * FROM users WHERE username = %s;" %request.form.get("username"))
+        rows = cur.fetchone()
+        # Ensure username exists and password is correct
+        if len(rows) != 1 or not check_password_hash(rows[0][2], request.form.get("password")):
+            return apology("invalid username and/or password", 403)
+
+        # Remember which user has logged in
+        session["user_id"] = rows[0][0]
+
+        # Redirect user to home page
+        return redirect("/")
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("login.html")
