@@ -6,7 +6,6 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, lookup, usd
 
-
 app = Flask(__name__) 
 
 # Ensure templates are auto-reloaded
@@ -23,21 +22,12 @@ Session(app)
 conn = sqlite3.connect("finance.db")
 cur = conn.cursor()
 
-#x = 12
-#cur.execute("SELECT * FROM users WHERE id = %i;" %x)
-#cash = cur.fetchall()[0][3]
-#cur.execute("SELECT * FROM portfolio WHERE user_id = %i;" %x) 
-#paper = cur.fetchone()
-#print(cash)
-#print(paper)
-
 @app.route('/') 
 @login_required
 def index(): 
-    x = session["user_id"]
-    cur.execute("SELECT * FROM users WHERE id = %s;" %x)
+    cur.execute("SELECT * FROM users WHERE id = ?", (session["user_id"],))
     cash = cur.fetchone()[0][3]
-    cur.execute("SELECT * FROM portfolio WHERE user_id = %s;" %session["user_id"]) 
+    cur.execute("SELECT * FROM portfolio WHERE user_id = ?", (session["user_id"],)) 
     paper = cur.fetchone()
 
     # value user's portfolio
